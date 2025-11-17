@@ -1,0 +1,2016 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Économie de Marovoay 416</title>
+    
+    <!-- Google Fonts - Polices élégantes -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Playfair+Display:wght@400;500;600;700&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>/* styles.css */
+/* Variables CSS pour la palette de couleurs */
+:root {
+  --green-1: #1a472a;
+  --green-2: #2d5a27;
+  --green-3: #4a7c59;
+  --green-4: #7da87b;
+  --earth-1: #8b6b4c;
+  --earth-2: #a67c52;
+  --earth-3: #bf9d7a;
+  --earth-4: #e6d5c3;
+  --accent: #c9a96a;
+  --accent-dark: #b89450;
+  --gold: #d4af37;
+  --light: #f8f9fa;
+  --dark: #2c3e2f;
+  --text: #2d3748;
+  --text-light: #6c757d;
+  --white: #ffffff;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12);
+  --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --border-radius: 12px;
+}
+
+/* Reset et styles de base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  line-height: 1.7;
+  color: var(--text);
+  background-color: var(--white);
+  font-weight: 400;
+  overflow-x: hidden;
+}
+
+/* Typographie élégante */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 1.5rem;
+  color: var(--dark);
+  letter-spacing: 0.5px;
+}
+
+h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+h2 {
+  font-size: 2.8rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+  font-weight: 600;
+}
+
+h3 {
+  font-size: 1.8rem;
+  color: var(--green-2);
+  font-weight: 500;
+}
+
+p {
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: var(--transition);
+}
+
+ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Styles pour les pages */
+.page {
+  display: none;
+  min-height: 100vh;
+  padding: 2rem 0;
+  margin-top: 80px;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.page.active {
+  display: block;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Indicateur de navigation clavier */
+.keyboard-hint {
+  position: fixed;
+  top: 90px;
+  right: 20px;
+  background: linear-gradient(135deg, var(--green-2), var(--green-3));
+  color: var(--white);
+  padding: 1rem 1.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-lg);
+  z-index: 1001;
+  transform: translateX(120%);
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: 300px;
+}
+
+.keyboard-hint.show {
+  transform: translateX(0);
+}
+
+.hint-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+
+.hint-content i {
+  font-size: 1.2rem;
+}
+
+.hint-close {
+  background: none;
+  border: none;
+  color: var(--white);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 50%;
+  transition: var(--transition);
+}
+
+.hint-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Boutons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, var(--green-2), var(--green-3));
+  color: var(--white);
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-weight: 600;
+  transition: var(--transition);
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  font-size: 1.1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(45, 90, 39, 0.3);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--green-2);
+  color: var(--green-2);
+}
+
+.btn-outline:hover {
+  background: var(--green-2);
+  color: var(--white);
+}
+
+.hero-btn {
+  padding: 1.25rem 2.5rem;
+  font-size: 1.2rem;
+  margin-top: 2rem;
+}
+
+.conclusion-btn {
+  background: linear-gradient(135deg, var(--gold), var(--accent));
+}
+
+.conclusion-btn:hover {
+  background: linear-gradient(135deg, var(--accent-dark), var(--gold));
+}
+
+.nav-btn {
+  cursor: pointer;
+}
+
+/* Navigation */
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 2px 30px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transition: var(--transition);
+  border-bottom: 1px solid rgba(142, 156, 142, 0.1);
+}
+
+.nav-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 80px;
+}
+
+.nav-logo {
+  font-family: 'Cinzel', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--green-2);
+  background: linear-gradient(135deg, var(--green-2), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  cursor: pointer;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-link {
+  font-weight: 500;
+  color: var(--text);
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  transition: var(--transition);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--gold));
+  transition: var(--transition);
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--green-2);
+}
+
+.nav-link:hover::after, .nav-link.active::after {
+  width: 100%;
+}
+
+.nav-link i {
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.nav-link:hover i {
+  transform: scale(1.1);
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.bar {
+  width: 25px;
+  height: 2px;
+  background-color: var(--green-2);
+  margin: 3px 0;
+  transition: var(--transition);
+  border-radius: 2px;
+}
+
+/* Hero Section - CORRIGÉ */
+.hero {
+  height: 100vh;
+  background: 
+    linear-gradient(135deg, rgba(26, 71, 42, 0.85) 0%, rgba(45, 90, 39, 0.75) 100%),
+    url('https://scontent.fmru2-1.fna.fbcdn.net/v/t39.30808-6/471610842_10160520404655969_5834008431016614937_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=0b6b33&_nc_ohc=d6zJHbGOMmQQ7kNvwEP8eJ4&_nc_oc=AdnBcbMrnMSDw_b8Uyyn0OCOxHjSI4m25vNcCRkpl9XGe0xosUMBeHKe_MGDJfwJUWQ&_nc_zt=23&_nc_ht=scontent.fmru2-1.fna&_nc_gid=byFP61dZfT15BWTGsvLd5w&oh=00_AfivvbZ3KyVTZlDSHD3pDLwazOXfQutM01DXSxBgBaPoIQ&oe=69213270') no-repeat center center/cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--white);
+  padding: 0 1rem;
+  position: relative;
+}
+
+.hero-content {
+  max-width: 900px;
+  z-index: 2;
+  width: 100%;
+}
+
+.hero-titles {
+  margin-bottom: 2rem;
+}
+
+.hero-main-title {
+  font-family: 'Cinzel', serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+  letter-spacing: 1px;
+  line-height: 1.1;
+}
+
+.hero-subtitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: var(--earth-4);
+  margin-bottom: 1.5rem;
+  font-style: italic;
+  line-height: 1.3;
+}
+
+.hero-divider {
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 1.5rem auto;
+}
+
+.hero-tagline {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  color: var(--earth-4);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--earth-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  animation: bounce 2s infinite;
+  cursor: pointer;
+}
+
+.scroll-indicator span {
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  40% {
+    transform: translateX(-50%) translateY(-10px);
+  }
+  60% {
+    transform: translateX(-50%) translateY(-5px);
+  }
+}
+
+/* En-têtes de section */
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 0 1rem;
+}
+
+.section-header h2 {
+  font-family: 'Cinzel', serif;
+  font-size: 2.5rem;
+  background: linear-gradient(135deg, var(--green-2), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.section-header h2::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--gold));
+  border-radius: 2px;
+}
+
+.section-subtitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  color: var(--text-light);
+  font-style: italic;
+  margin-top: 1.5rem;
+}
+
+/* Présentation Section */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  padding: 0 1rem;
+}
+
+.presentation-card {
+  background: var(--white);
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 1.5rem;
+  border-left: 4px solid var(--accent);
+  transition: var(--transition);
+}
+
+.presentation-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.presentation-card h3 {
+  font-family: 'Cinzel', serif;
+  color: var(--green-2);
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+}
+
+.map-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.map-figure {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+}
+
+.map-decoration {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  bottom: -10px;
+  left: -10px;
+  border: 2px solid var(--earth-4);
+  border-radius: var(--border-radius);
+  pointer-events: none;
+}
+
+.decoration-element {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--accent);
+}
+
+.decoration-element:nth-child(1) {
+  top: -10px;
+  left: -10px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.decoration-element:nth-child(2) {
+  bottom: -10px;
+  right: -10px;
+  border-left: none;
+  border-top: none;
+}
+
+#map {
+  width: 100%;
+  height: 400px;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+}
+
+.map-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--light), var(--earth-4));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--green-2);
+}
+
+.map-loading i {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.map-loading p {
+  font-weight: 600;
+  margin: 0;
+}
+
+figcaption {
+  text-align: center;
+  margin-top: 1rem;
+  font-style: italic;
+  color: var(--text-light);
+  font-family: 'Playfair Display', serif;
+  font-size: 0.9rem;
+}
+
+/* Cards Grid */
+.cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  padding: 0 1rem;
+}
+
+.card {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  padding: 2rem 1.5rem;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent), var(--gold));
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.economy-card {
+  border: 1px solid rgba(142, 156, 142, 0.1);
+}
+
+.card-icon {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, var(--earth-4), var(--white));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  position: relative;
+}
+
+.card-icon::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  background: linear-gradient(135deg, var(--accent), var(--gold));
+  border-radius: 50%;
+  z-index: -1;
+}
+
+.card-icon i {
+  font-size: 2rem;
+  color: var(--green-2);
+}
+
+.card h3 {
+  font-family: 'Cinzel', serif;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+}
+
+/* Activities Grid */
+.activities-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  padding: 0 1rem;
+}
+
+.activity-item {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  align-items: center;
+  background: var(--white);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+.activity-item:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.activity-image {
+  position: relative;
+  overflow: hidden;
+}
+
+.activity-image img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  transition: var(--transition);
+}
+
+.activity-item:hover .activity-image img {
+  transform: scale(1.05);
+}
+
+.activity-overlay {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: linear-gradient(135deg, var(--green-2), var(--accent));
+  color: var(--white);
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.activity-content {
+  padding: 1.5rem;
+}
+
+.activity-content h3 {
+  font-family: 'Cinzel', serif;
+  color: var(--green-2);
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+}
+
+/* Opportunities Grid */
+.opportunities-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  padding: 0 1rem;
+}
+
+.opportunity {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  padding: 2rem 1.5rem;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  text-align: center;
+  border: 1px solid rgba(142, 156, 142, 0.1);
+}
+
+.opportunity:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.opportunity-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--earth-4), var(--white));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  position: relative;
+}
+
+.opportunity-icon::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(135deg, var(--accent), var(--gold));
+  border-radius: 50%;
+  z-index: -1;
+}
+
+.opportunity-icon i {
+  font-size: 1.5rem;
+  color: var(--green-2);
+}
+
+.opportunity h3 {
+  font-family: 'Cinzel', serif;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+/* Challenges Grid */
+.challenges-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  padding: 0 1rem;
+}
+
+.challenge {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  padding: 2rem 1.5rem;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  text-align: center;
+  border-top: 4px solid var(--earth-1);
+}
+
+.challenge:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.challenge-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #f8f9fa, var(--white));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  border: 2px solid var(--earth-3);
+}
+
+.challenge-icon i {
+  font-size: 1.5rem;
+  color: var(--earth-1);
+}
+
+.challenge h3 {
+  font-family: 'Cinzel', serif;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: var(--earth-1);
+}
+
+/* Solutions Grid - NOUVELLE STRUCTURE */
+.solutions-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  padding: 0 1rem;
+}
+
+.solution-card {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  padding: 2rem 1.5rem;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  position: relative;
+  border: 1px solid rgba(142, 156, 142, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.solution-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.solution-number {
+  position: absolute;
+  top: -15px;
+  left: 1.5rem;
+  background: linear-gradient(135deg, var(--accent), var(--gold));
+  color: var(--white);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  font-family: 'Cinzel', serif;
+  z-index: 2;
+}
+
+.solution-content {
+  margin-top: 1rem;
+}
+
+.solution-card h3 {
+  font-family: 'Cinzel', serif;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  color: var(--green-2);
+}
+
+.solution-card p {
+  margin-bottom: 0;
+}
+
+/* Conclusion Section */
+.conclusion-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.conclusion-text {
+  background: var(--white);
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 2rem;
+  border-left: 4px solid var(--gold);
+}
+
+.conclusion-text p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  font-family: 'Playfair Display', serif;
+}
+
+.conclusion-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Footer */
+footer {
+  background: linear-gradient(135deg, var(--dark), var(--green-1));
+  color: var(--white);
+  padding: 3rem 0 1rem;
+  margin-top: 3rem;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
+.footer-info h3 {
+  color: var(--white);
+  margin-bottom: 1rem;
+  font-family: 'Cinzel', serif;
+  font-size: 1.5rem;
+}
+
+.footer-social {
+  margin-top: 1.5rem;
+}
+
+.footer-social span {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--earth-4);
+  font-size: 0.9rem;
+}
+
+.social-links {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.social-links a {
+  width: 35px;
+  height: 35px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  font-size: 0.9rem;
+}
+
+.social-links a:hover {
+  background: var(--accent);
+  transform: translateY(-2px);
+}
+
+.footer-nav {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+}
+
+.footer-nav a {
+  color: var(--earth-4);
+  transition: var(--transition);
+  padding: 0.3rem 0;
+  border-bottom: 1px solid transparent;
+  font-size: 0.9rem;
+}
+
+.footer-nav a:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 1.5rem;
+  text-align: center;
+  color: var(--earth-4);
+  font-size: 0.9rem;
+}
+
+.footer-credits {
+  margin-top: 0.5rem;
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+  font-size: 0.8rem;
+}
+
+/* ===== MEDIA QUERIES ===== */
+
+/* Tablettes */
+@media (min-width: 768px) {
+  .container {
+    padding: 0 2rem;
+  }
+  
+  h1 {
+    font-size: 4rem;
+  }
+  
+  h2 {
+    font-size: 3rem;
+  }
+  
+  .hero-main-title {
+    font-size: 4.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 2rem;
+  }
+  
+  .section-header {
+    padding: 0;
+  }
+  
+  .section-header h2 {
+    font-size: 2.8rem;
+  }
+  
+  .content-grid {
+    grid-template-columns: 2fr 1fr;
+    gap: 3rem;
+    padding: 0;
+  }
+  
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    padding: 0;
+  }
+  
+  .activities-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    padding: 0;
+  }
+  
+  .activity-item {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .activity-item:nth-child(even) {
+    direction: rtl;
+  }
+  
+  .activity-item:nth-child(even) .activity-content {
+    direction: ltr;
+  }
+  
+  .opportunities-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    padding: 0;
+  }
+  
+  .challenges-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    padding: 0;
+  }
+  
+  .solutions-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    padding: 0;
+  }
+  
+  .footer-content {
+    grid-template-columns: 2fr 1fr;
+    padding: 0;
+  }
+  
+  .footer-nav {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .nav-menu {
+    gap: 2rem;
+  }
+  
+  .nav-link {
+    font-size: 0.95rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 992px) {
+  .cards-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .opportunities-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .challenges-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .solutions-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .nav-menu {
+    display: flex !important;
+  }
+  
+  .hero-main-title {
+    font-size: 5rem;
+  }
+}
+
+/* Grands écrans */
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1200px;
+  }
+  
+  .hero-main-title {
+    font-size: 5.5rem;
+  }
+}
+
+/* Navigation mobile */
+@media (max-width: 991px) {
+  .hamburger {
+    display: flex;
+  }
+  
+  .nav-menu {
+    position: fixed;
+    left: -100%;
+    top: 80px;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    width: 100%;
+    text-align: center;
+    transition: var(--transition);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 2rem 0;
+    gap: 0;
+  }
+  
+  .nav-menu.active {
+    left: 0;
+  }
+  
+  .nav-item {
+    margin: 1rem 0;
+  }
+  
+  .hamburger.active .bar:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .hamburger.active .bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+  
+  .hamburger.active .bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+
+  .keyboard-hint {
+    display: none;
+  }
+}
+
+/* Petits mobiles */
+@media (max-width: 480px) {
+  .hero-main-title {
+    font-size: 2.8rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.4rem;
+  }
+  
+  .hero-tagline {
+    font-size: 1rem;
+  }
+  
+  .section-header h2 {
+    font-size: 2rem;
+  }
+  
+  .section-subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+  }
+  
+  .hero-btn {
+    padding: 1rem 2rem;
+  }
+  
+  .presentation-card {
+    padding: 1.5rem;
+  }
+  
+  .card {
+    padding: 1.5rem 1rem;
+  }
+  
+  .activity-content {
+    padding: 1rem;
+  }
+  
+  .conclusion-text {
+    padding: 1.5rem;
+  }
+  
+  .conclusion-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .conclusion-actions .btn {
+    width: 100%;
+    max-width: 250px;
+    justify-content: center;
+  }
+}</style>
+</head>
+<body>
+    <!-- Navigation -->
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <a href="#" class="nav-logo">Marovoay</a>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#accueil" class="nav-link active" data-page="accueil">
+                            <i class="fas fa-home"></i>
+                            <span>Accueil</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#presentation" class="nav-link" data-page="presentation">
+                            <i class="fas fa-map-marked-alt"></i>
+                            <span>Présentation</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#economie" class="nav-link" data-page="economie">
+                            <i class="fas fa-chart-pie"></i>
+                            <span>Économie</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#activites" class="nav-link" data-page="activites">
+                            <i class="fas fa-tractor"></i>
+                            <span>Activités</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#entrepreneuriat" class="nav-link" data-page="entrepreneuriat">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Entrepreneuriat</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#defis" class="nav-link" data-page="defis">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Défis</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#solutions" class="nav-link" data-page="solutions">
+                            <i class="fas fa-puzzle-piece"></i>
+                            <span>Solutions</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#conclusion" class="nav-link" data-page="conclusion">
+                            <i class="fas fa-flag-checkered"></i>
+                            <span>Conclusion</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Indicateur de navigation clavier -->
+    <div class="keyboard-hint" id="keyboardHint">
+        <div class="hint-content">
+            <i class="fas fa-keyboard"></i>
+            <span>Navigation clavier: ← → pour changer de page, ESC pour accueil</span>
+            <button class="hint-close" id="closeHint">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Pages principales -->
+    <main class="main-content">
+        <!-- Page Accueil -->
+        <section id="accueil" class="page active">
+            <div class="hero">
+                <div class="hero-content">
+                    <div class="hero-titles">
+                        <h1 class="hero-main-title">Marovoay</h1>
+                        <h2 class="hero-subtitle">Deuxième région rizicole de Madagascar</h2>
+                        <div class="hero-divider"></div>
+                        <p class="hero-tagline">Terroir, cultures et opportunités au cœur de la production agricole malgache</p>
+                    </div>
+                    <a href="#presentation" class="btn nav-btn hero-btn" data-page="presentation">
+                        <span>Explorer Marovoay</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="scroll-indicator nav-btn" data-page="presentation">
+                    <span>Découvrir</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- Page Présentation -->
+        <section id="presentation" class="page">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Présentation de Marovoay</h2>
+                    <div class="section-subtitle">Découvrez la perle rizicole du Nord-Ouest malgache</div>
+                </div>
+                <div class="content-grid">
+                    <div class="text-content">
+                        <div class="presentation-card">
+                            <h3>Une situation géographique privilégiée</h3>
+                            <p>Marovoay, commune urbaine stratégiquement positionnée dans la région de Boeny, s'étend majestueusement dans la plaine fertile de la Betsiboka. Cette localisation exceptionnelle en fait un terroir agricole d'une richesse incomparable.</p>
+                        </div>
+                        <div class="presentation-card">
+                            <h3>Le grenier à riz de Madagascar</h3>
+                            <p>Reconnue comme le deuxième producteur national de riz, Marovoay incarne l'excellence agricole malgache. Ses vastes plaines alluviales, baignées par un réseau hydrographique développé, nourrissent une tradition rizicole séculaire.</p>
+                        </div>
+                        <div class="presentation-card">
+                            <h3>Un écosystème unique</h3>
+                            <p>Entre les berges du fleuve Betsiboka et les contreforts du parc national d'Ankarafantsika, Marovoay bénéficie d'une biodiversité remarquable qui participe à la richesse de son patrimoine naturel et culturel.</p>
+                        </div>
+                    </div>
+                    <div class="map-container">
+                        <figure class="map-figure">
+                            <div class="map-decoration">
+                                <div class="decoration-element"></div>
+                                <div class="decoration-element"></div>
+                            </div>
+                            <div id="map" class="map-placeholder">
+                                <div class="map-loading">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <p>Chargement de la carte...</p>
+                                </div>
+                            </div>
+                            <figcaption>Localisation stratégique de Marovoay dans la région de Boeny</figcaption>
+                        </figure>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Page Types d'économie -->
+        <section id="economie" class="page">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Économie & Patrimoine</h2>
+                    <div class="section-subtitle">Les piliers économiques de la région Marovoay</div>
+                </div>
+                <div class="cards-grid">
+                    <div class="card economy-card">
+                        <div class="card-icon">
+                            <i class="fas fa-tractor"></i>
+                        </div>
+                        <h3>Riziculture d'Excellence</h3>
+                        <p>Plus de 90% des terres cultivées dédiées à la production rizicole, faisant de Marovoay le deuxième grenier national. Des variétés adaptées aux conditions locales préservent une tradition agricole d'exception.</p>
+                    </div>
+                    <div class="card economy-card">
+                        <div class="card-icon">
+                            <i class="fas fa-cow"></i>
+                        </div>
+                        <h3>Élevage Traditionnel</h3>
+                        <p>L'élevage bovin extensif, pratiqué par la majorité des ménages, représente un capital socio-économique essentiel. Les zébus incarnent à la fois force de travail, sécurité alimentaire et valeur patrimoniale.</p>
+                    </div>
+                    <div class="card economy-card">
+                        <div class="card-icon">
+                            <i class="fas fa-fish"></i>
+                        </div>
+                        <h3>Ressources Halieutiques</h3>
+                        <p>La proximité des fleuves Betsiboka et Marovoay offre des ressources halieutiques abondantes. La pêche continentale et l'exploitation raisonnée de la mangrove participent à la diversité économique.</p>
+                    </div>
+                    <div class="card economy-card">
+                        <div class="card-icon">
+                            <i class="fas fa-store"></i>
+                        </div>
+                        <h3>Commerce Dynamique</h3>
+                        <p>Marchés animés et réseaux commerciaux structurés permettent l'écoulement des productions locales et l'approvisionnement en biens essentiels. Le riz et le bétail demeurent les produits phares des échanges.</p>
+                    </div>
+                    <div class="card economy-card">
+                        <div class="card-icon">
+                            <i class="fas fa-hands"></i>
+                        </div>
+                        <h3>Savoir-Faire Artisanal</h3>
+                        <p>L'artisanat valorise les ressources locales - bois précieux, fibres végétales, cuir - à travers des techniques transmises de génération en génération. Une économie créative complémentaire aux activités agricoles.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Page Activités -->
+        <section id="activites" class="page">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Activités Économiques</h2>
+                    <div class="section-subtitle">Le rythme des saisons et des traditions</div>
+                </div>
+                <div class="activities-grid">
+                    <div class="activity-item">
+                        <div class="activity-image">
+                            <img src="https://www.studiosifaka.org/images/cache/k2/w1024_h682/22c02097e4438bd2f2f3fe4a6a3ab0e1.jpg" alt="Rizière à Ambolimoty" loading="lazy">
+                            <div class="activity-overlay">
+                                <span>Riziculture</span>
+                            </div>
+                        </div>
+                        <div class="activity-content">
+                            <h3>Travaux Rizicoles Saisonniers</h3>
+                            <p>Les cycles de production rythment la vie économique : préparation des terres, repiquage méticuleux, entretien des cultures et récolte traditionnelle. Ces travaux mobilisent une main-d'œuvre experte tout au long de l'année, perpétuant des savoir-faire ancestraux.</p>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-image">
+                            <img src="https://tourisme-majunga.com/wp-content/uploads/2018/03/marovoay-mahajanga-madagascar-1.jpg" alt="Marché de zébus à Marovoay" loading="lazy">
+                            <div class="activity-overlay">
+                                <span>Élevage</span>
+                            </div>
+                        </div>
+                        <div class="activity-content">
+                            <h3>Foires au Zébu Traditionnelles</h3>
+                            <p>Les marchés aux bestiaux constituent des événements économiques et sociaux majeurs. Ces rassemblements, où s'échangent les plus beaux spécimens, sont l'occasion de transactions commerciales importantes et renforcent les liens communautaires.</p>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-image">
+                            <img src="https://afrique-diplomatique.com/wp-content/uploads/2024/01/Riziculture-e1704465922455.jpg" alt="Riz de Marovoay" loading="lazy">
+                            <div class="activity-overlay">
+                                <span>Transformation</span>
+                            </div>
+                        </div>
+                        <div class="activity-content">
+                            <h3>Transformation du Riz</h3>
+                            <p>La métamorphose du paddy en riz blanc s'effectue dans des décortiqueries locales, modernisant progressivement des techniques traditionnelles. Cette activité de valorisation augmente significativement la valeur marchande du produit tout en répondant aux exigences des marchés locaux et nationaux.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Page Entrepreneuriat -->
+        <section id="entrepreneuriat" class="page">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Opportunités Entrepreneuriales</h2>
+                    <div class="section-subtitle">Innovation et développement pour l'avenir de Marovoay</div>
+                </div>
+                <div class="opportunities-grid">
+                    <div class="opportunity">
+                        <div class="opportunity-icon">
+                            <i class="fas fa-industry"></i>
+                        </div>
+                        <h3>Valorisation Agro-Industrielle</h3>
+                        <p>Transformation du riz et création de produits dérivés pour maximiser la valeur des productions locales et développer de nouvelles filières économiques.</p>
+                    </div>
+                    <div class="opportunity">
+                        <div class="opportunity-icon">
+                            <i class="fas fa-warehouse"></i>
+                        </div>
+                        <h3>Solutions de Stockage Innovantes</h3>
+                        <p>Développement d'infrastructures modernes pour réduire les pertes post-récolte et optimiser la valorisation des productions agricoles.</p>
+                    </div>
+                    <div class="opportunity">
+                        <div class="opportunity-icon">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <h3>Logistique et Distribution</h3>
+                        <p>Création de services de transport adaptés pour désenclaver les zones de production et faciliter l'accès aux marchés régionaux et nationaux.</p>
+                    </div>
+                    <div class="opportunity">
+                        <div class="opportunity-icon">
+                            <i class="fas fa-hiking"></i>
+                        </div>
+                        <h3>Écotourisme et Agrotourisme</h3>
+                        <p>Valorisation des paysages, du patrimoine culturel et de la proximité du parc national d'Ankarafantsika pour développer un tourisme durable.</p>
+                    </div>
+                    <div class="opportunity">
+                        <div class="opportunity-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3>Services Numériques Agricoles</h3>
+                        <p>Applications mobiles et plateformes digitales pour informer les producteurs sur les marchés, les techniques et les opportunités commerciales.</p>
+                    </div>
+                    <div class="opportunity">
+                        <div class="opportunity-icon">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h3>Coopératives Spécialisées</h3>
+                        <p>Structuration de coopératives pour mutualiser les moyens de production, de commercialisation et renforcer le pouvoir de négociation.</p>
+                    </div>
+                    <div class="opportunity">
+                        <div class="opportunity-icon">
+                            <i class="fas fa-solar-panel"></i>
+                        </div>
+                        <h3>Énergies Renouvelables</h3>
+                        <p>Développement de solutions énergétiques locales pour soutenir les activités économiques et réduire la dépendance aux ressources traditionnelles.</p>
+                    </div>
+                    <div class="opportunity">
+                        <div class="opportunity-icon">
+                            <i class="fas fa-vest"></i>
+                        </div>
+                        <h3>Transformation des Productions Animales</h3>
+                        <p>Création de filières de valorisation des sous-produits de l'élevage pour développer une économie circulaire et créer de la valeur ajoutée.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Page Défis -->
+        <section id="defis" class="page">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Défis & Enjeux</h2>
+                    <div class="section-subtitle">Les obstacles au développement entrepreneurial et économique</div>
+                </div>
+                <div class="challenges-grid">
+                    <div class="challenge">
+                        <div class="challenge-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <h3>Accès au Financement</h3>
+                        <p>Difficulté d'accès au crédit formel, taux de pénétration de la microfinance inférieur à la moyenne nationale, et réticence culturelle face aux procédures bancaires traditionnelles.</p>
+                    </div>
+                    <div class="challenge">
+                        <div class="challenge-icon">
+                            <i class="fas fa-road"></i>
+                        </div>
+                        <h3>Infrastructures Routières</h3>
+                        <p>Réseau routier peu entretenu devenant impraticable en saison des pluies, limitant considérablement la mobilité des personnes et des marchandises.</p>
+                    </div>
+                    <div class="challenge">
+                        <div class="challenge-icon">
+                            <i class="fas fa-temperature-low"></i>
+                        </div>
+                        <h3>Stockage et Conservation</h3>
+                        <p>Absence d'infrastructures adaptées pour le stockage des productions agricoles, entraînant des pertes post-récolte économiquement significatives.</p>
+                    </div>
+                    <div class="challenge">
+                        <div class="challenge-icon">
+                            <i class="fas fa-tint"></i>
+                        </div>
+                        <h3>Gestion de l'Eau</h3>
+                        <p>Insuffisance et mauvaise gestion des ressources hydriques, réseaux d'irrigation vétustes et ensablement chronique des canaux d'irrigation.</p>
+                    </div>
+                    <div class="challenge">
+                        <div class="challenge-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3>Formation et Compétences</h3>
+                        <p>Manque de formation adaptée aux techniques agricoles modernes et aux pratiques entrepreneuriales contemporaines pour les jeunes générations.</p>
+                    </div>
+                    <div class="challenge">
+                        <div class="challenge-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Accès aux Marchés</h3>
+                        <p>Difficultés de commercialisation liées à l'isolement géographique, à la méconnaissance des prix et à la faible valorisation des productions locales.</p>
+                    </div>
+                    <div class="challenge">
+                        <div class="challenge-icon">
+                            <i class="fas fa-gavel"></i>
+                        </div>
+                        <h3>Cadre Réglementaire</h3>
+                        <p>Complexité des procédures administratives, insécurité foncière persistante et manque de clarification des rôles entre acteurs institutionnels.</p>
+                    </div>
+                    <div class="challenge">
+                        <div class="challenge-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3>Accès à l'Énergie</h3>
+                        <p>Dépendance au bois de chauffage comme principale source d'énergie, limitant le développement d'activités de transformation nécessitant une énergie stable.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Page Solutions -->
+        <section id="solutions" class="page">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Solutions Stratégiques</h2>
+                    <div class="section-subtitle">Des réponses concrètes pour un développement durable</div>
+                </div>
+                <div class="solutions-grid">
+                    <div class="solution-card">
+                        <div class="solution-number">01</div>
+                        <div class="solution-content">
+                            <h3>Financement Adapté</h3>
+                            <p>Développement de produits de microcrédit spécialement conçus pour les activités agricoles et formation des populations aux mécanismes financiers formels.</p>
+                        </div>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-number">02</div>
+                        <div class="solution-content">
+                            <h3>Infrastructures Routières</h3>
+                            <p>Programmation d'entretien régulier des axes prioritaires et promotion de solutions de transport adaptées aux conditions climatiques locales.</p>
+                        </div>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-number">03</div>
+                        <div class="solution-content">
+                            <h3>Innovation dans le Stockage</h3>
+                            <p>Introduction de technologies de stockage simples et économiquement accessibles (silos, séchoirs solaires) couplée à des programmes de formation.</p>
+                        </div>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-number">04</div>
+                        <div class="solution-content">
+                            <h3>Gestion Durable de l'Eau</h3>
+                            <p>Modernisation des systèmes d'irrigation, renforcement des associations d'usagers et promotion de techniques d'économie d'eau innovantes.</p>
+                        </div>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-number">05</div>
+                        <div class="solution-content">
+                            <h3>Formation Professionnelle</h3>
+                            <p>Création de centres de formation aux métiers agricoles et entrepreneuriaux avec des programmes adaptés aux réalités socio-économiques locales.</p>
+                        </div>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-number">06</div>
+                        <div class="solution-content">
+                            <h3>Commercialisation Intelligente</h3>
+                            <p>Développement de plateformes marketplace locales, organisation de foires commerciales régulières et amélioration de l'information sur les prix.</p>
+                        </div>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-number">07</div>
+                        <div class="solution-content">
+                            <h3>Cadre Institutionnel Renforcé</h3>
+                            <p>Simplification des procédures administratives, clarification des compétences des collectivités et sécurisation du foncier agricole.</p>
+                        </div>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-number">08</div>
+                        <div class="solution-content">
+                            <h3>Transition Énergétique</h3>
+                            <p>Promotion active de solutions énergétiques décentralisées (solaire, biogaz) pour soutenir les activités économiques et la transformation.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Page Conclusion -->
+        <section id="conclusion" class="page">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Vision d'Avenir</h2>
+                    <div class="section-subtitle">Vers un développement économique durable et inclusif</div>
+                </div>
+                <div class="conclusion-content">
+                    <div class="conclusion-text">
+                        <p>Marovoay incarne un territoire au potentiel économique exceptionnel, fort de sa position de deuxième région rizicole de Madagascar. Malgré les défis structurels, les opportunités de développement sont nombreuses et variées, portées par une population active, des ressources naturelles abondantes et un patrimoine culturel riche.</p>
+                        
+                        <p>La valorisation des filières agricoles traditionnelles, couplée au développement d'activités de transformation innovantes et à la modernisation des infrastructures, constituent des leviers prioritaires pour renforcer l'économie locale et améliorer durablement les conditions de vie des populations.</p>
+                        
+                        <p>L'avenir de Marovoay repose sur une alliance stratégique entre tradition et innovation, entre patrimoine et modernité. Nous appelons les investisseurs visionnaires, les organisations de développement engagées et les jeunes entrepreneurs talentueux à s'unir pour construire ensemble un avenir économique prospère, résilient et durable pour Marovoay et sa région.</p>
+                    </div>
+                    
+                    <div class="conclusion-actions">
+                        <a href="#accueil" class="btn nav-btn conclusion-btn" data-page="accueil">
+                            <i class="fas fa-home"></i>
+                            <span>Retour à l'accueil</span>
+                        </a>
+                        <a href="#presentation" class="btn btn-outline nav-btn" data-page="presentation">
+                            <i class="fas fa-redo"></i>
+                            <span>Redécouvrir Marovoay</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>Économie de Marovoay 416</h3>
+                    <p>Découvrez le potentiel économique de la deuxième région rizicole de Madagascar</p>
+                    <div class="footer-social">
+                        <span>Suivez-nous:</span>
+                        <div class="social-links">
+                            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-nav">
+                        <a href="#presentation" class="nav-btn" data-page="presentation">Présentation</a>
+                        <a href="#economie" class="nav-btn" data-page="economie">Économie</a>
+                        <a href="#entrepreneuriat" class="nav-btn" data-page="entrepreneuriat">Entrepreneuriat</a>
+                        <a href="#defis" class="nav-btn" data-page="defis">Défis & Solutions</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Économie de Marovoay 416.</p>
+                <div class="footer-credits">
+                    <span>Patrimoine • Développement • Avenir</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script> // script.js
+// Gestion du système d'onglets et navigation au clavier
+document.addEventListener('DOMContentLoaded', function() {
+    const pages = document.querySelectorAll('.page');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const navBtns = document.querySelectorAll('.nav-btn');
+    const hamburger = document.querySelector('.hamburger');
+    const navMenu = document.querySelector('.nav-menu');
+    const keyboardHint = document.getElementById('keyboardHint');
+    const closeHint = document.getElementById('closeHint');
+    
+    // Ordre des pages pour la navigation clavier
+    const pageOrder = ['accueil', 'presentation', 'economie', 'activites', 'entrepreneuriat', 'defis', 'solutions', 'conclusion'];
+    let currentPageIndex = 0;
+    
+    // Fonction pour changer de page
+    function showPage(pageId) {
+        // Cacher toutes les pages
+        pages.forEach(page => {
+            page.classList.remove('active');
+        });
+        
+        // Afficher la page sélectionnée
+        const targetPage = document.getElementById(pageId);
+        if (targetPage) {
+            targetPage.classList.add('active');
+            
+            // Mettre à jour l'index de la page actuelle
+            currentPageIndex = pageOrder.indexOf(pageId);
+        }
+        
+        // Mettre à jour la navigation active
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('data-page') === pageId) {
+                link.classList.add('active');
+            }
+        });
+        
+        // Fermer le menu mobile si ouvert
+        if (navMenu.classList.contains('active')) {
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('active');
+        }
+        
+        // Faire défiler vers le haut de la page
+        window.scrollTo(0, 0);
+    }
+    
+    // Navigation vers la page suivante
+    function nextPage() {
+        const nextIndex = (currentPageIndex + 1) % pageOrder.length;
+        showPage(pageOrder[nextIndex]);
+    }
+    
+    // Navigation vers la page précédente
+    function prevPage() {
+        const prevIndex = (currentPageIndex - 1 + pageOrder.length) % pageOrder.length;
+        showPage(pageOrder[prevIndex]);
+    }
+    
+    // Gestionnaire d'événements pour la navigation clavier
+    function handleKeyboardNavigation(e) {
+        // Ignorer si l'utilisateur est en train de taper dans un champ de formulaire
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+            return;
+        }
+        
+        switch(e.key) {
+            case 'ArrowRight':
+                e.preventDefault();
+                nextPage();
+                break;
+            case 'ArrowLeft':
+                e.preventDefault();
+                prevPage();
+                break;
+            case 'Escape':
+                e.preventDefault();
+                showPage('accueil');
+                break;
+            case '1':
+                e.preventDefault();
+                showPage('accueil');
+                break;
+            case '2':
+                e.preventDefault();
+                showPage('presentation');
+                break;
+            case '3':
+                e.preventDefault();
+                showPage('economie');
+                break;
+            case '4':
+                e.preventDefault();
+                showPage('activites');
+                break;
+            case '5':
+                e.preventDefault();
+                showPage('entrepreneuriat');
+                break;
+            case '6':
+                e.preventDefault();
+                showPage('defis');
+                break;
+            case '7':
+                e.preventDefault();
+                showPage('solutions');
+                break;
+            case '8':
+                e.preventDefault();
+                showPage('conclusion');
+                break;
+        }
+    }
+    
+    // Afficher l'indicateur de navigation clavier
+    function showKeyboardHint() {
+        if (!localStorage.getItem('keyboardHintShown')) {
+            setTimeout(() => {
+                keyboardHint.classList.add('show');
+                localStorage.setItem('keyboardHintShown', 'true');
+            }, 2000);
+        }
+    }
+    
+    // Initialiser la carte Leaflet
+    function initMap() {
+        // Coordonnées de Marovoay
+        const marovoayCoords = [-16.1057248, 46.6721226];
+        
+        // Créer la carte
+        const map = L.map('map').setView(marovoayCoords, 12);
+        
+        // Ajouter le fond de carte
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        
+        // Ajouter un marqueur pour Marovoay
+        const marker = L.marker(marovoayCoords).addTo(map);
+        marker.bindPopup('<b>Marovoay</b><br>Deuxième région rizicole de Madagascar').openPopup();
+        
+        // Ajouter un cercle pour indiquer la zone
+        L.circle(marovoayCoords, {
+            color: '#2d5a27',
+            fillColor: '#4a7c59',
+            fillOpacity: 0.2,
+            radius: 5000
+        }).addTo(map);
+    }
+    
+    // Écouteurs pour les liens de navigation
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const pageId = this.getAttribute('data-page');
+            showPage(pageId);
+        });
+    });
+    
+    // Écouteurs pour les boutons de navigation
+    navBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            if (this.classList.contains('nav-btn')) {
+                e.preventDefault();
+                const pageId = this.getAttribute('data-page');
+                showPage(pageId);
+            }
+        });
+    });
+    
+    // Logo vers l'accueil
+    document.querySelector('.nav-logo').addEventListener('click', function(e) {
+        e.preventDefault();
+        showPage('accueil');
+    });
+    
+    // Indicateur de défilement vers le bas
+    document.querySelector('.scroll-indicator').addEventListener('click', function() {
+        showPage('presentation');
+    });
+    
+    // Menu burger pour la navigation mobile
+    hamburger.addEventListener('click', function() {
+        hamburger.classList.toggle('active');
+        navMenu.classList.toggle('active');
+    });
+    
+    // Fermer l'indicateur de navigation clavier
+    if (closeHint) {
+        closeHint.addEventListener('click', function() {
+            keyboardHint.classList.remove('show');
+        });
+    }
+    
+    // Changement de style de la navbar au scroll
+    window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 50) {
+            navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+            navbar.style.backdropFilter = 'blur(20px)';
+        } else {
+            navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+            navbar.style.backdropFilter = 'blur(20px)';
+        }
+    });
+    
+    // Écouteur d'événements pour la navigation clavier
+    document.addEventListener('keydown', handleKeyboardNavigation);
+    
+    // Animation au défilement pour les éléments
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+    
+    // Observer les éléments pour l'animation
+    document.querySelectorAll('.card, .opportunity, .challenge, .solution-card, .activity-item, .presentation-card').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+    });
+    
+    // Afficher la page d'accueil par défaut
+    showPage('accueil');
+    
+    // Afficher l'indicateur de navigation clavier
+    showKeyboardHint();
+    
+    // Initialiser la carte
+    if (document.getElementById('map')) {
+        initMap();
+    }
+    
+    // Effet de parallaxe pour l'héros
+    window.addEventListener('scroll', function() {
+        const scrolled = window.pageYOffset;
+        const hero = document.querySelector('.hero');
+        if (hero) {
+            hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+        }
+    });
+});</script>
+</body>
+</html>
